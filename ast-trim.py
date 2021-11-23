@@ -1,18 +1,32 @@
-##========          ======##
-##======== AST-TRIM ======##
-##========    1.0   ======##
-
-# script for trimming silence at start/end of all audiofiles in a folder
-
 ##======== some local under-the-hood settings...
 
 import os
 from os import listdir
 from os.path import isfile, join
-
+from sys import platform
 from pydub import AudioSegment
 
 ##======== functions
+
+'''
+backslash bullshit
+'''
+def preparePathString(arg):
+    # prepare the name
+    if platform == "linux" or platform == "linux2":
+        # linux
+        arg = arg.replace("\\", "")
+
+    elif platform == "darwin":
+        # OS X
+        arg = arg.replace("\\", "")
+
+    elif platform == "win32":
+        # Windows...
+        arg = arg.replace("\\", "/")
+
+    return arg
+
 
 def detect_leading_silence(sound, silence_threshold=-20.0, chunk_size=0.3):
     '''
@@ -39,6 +53,7 @@ print("\n\n\n=== astro's cool wavefile trimmer ===\n\n\n")
 pat = input("input working path: ")
 if (pat == ""):
     raise SystemExit("Provide a path!!!\n\n\n")
+pat = preparePathString(pat).strip()
 
 ext = input("\ninput files extension (defaults to wav): ")
 if (ext == ""):
